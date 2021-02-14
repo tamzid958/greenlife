@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load static %}
+    <div id="carouselExampleDark" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="10000">
+                <img src="{% static 'images/pexels-edward-jenner-4033022.jpg' %}" class="d-block w-100"
+                     alt="edward-jenner">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="2000">
+                <img src="{% static 'images/pexels-karolina-grabowska-4230622.jpg' %}" class="d-block w-100"
+                     alt="karolina-grabowska">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/pexels-karolina-grabowska-4230623.jpg' %}" class="d-block w-100"
+                     alt="karolina-grabowska">
+                <div class="carousel-caption d-none d-md-block">
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <div class="container mt-3 d-flex justify-content-between align-items-center">
+        <div class="w-100 d-none d-sm-none d-md-none d-lg-block">
+            <img src="{% static 'images/19198095.png' %}" class="img-fluid">
+        </div>
+        <div class="ms-5">
+            <h1>Lorem Pusum Title</h1>
+            <h6 class="text-muted">lorem SubTitle</h6>
+            <p class="text-start">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                It has survived not only five centuries, but also the leap into electronic typesetting,
+                remaining essentially unchanged.
+            </p>
+            <button class="btn btn-outline-success">Donate Blood</button>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card bg-success text-white show-card m-1">
+                    <img src="{% static 'images/6261.png' %}" class="card-img card-img-top">
+                    <div class="card-img-overlay d-flex flex-column justify-content-center">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                        <button class="btn btn-light">Find Blood</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-success text-white show-card m-1">
+                    <img src="{% static 'images/6262.png' %}" class="card-img card-img-top">
+                    <div class="card-img-overlay d-flex flex-column justify-content-center">
+                        <h5 class="card-title">Card title</h5>
+                        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
+                            additional content. This content is a little bit longer.</p>
+                        <button class="btn btn-light">Register Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <h1 class="text-center">Search Blood Donor by Area</h1>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-Location"><i class="fa fa-location-arrow"></i></span>
+            <input type="text" class="form-control form-control-lg" placeholder="Search By Location"
+                   aria-label="Location" aria-describedby="basic-Location">
+        </div>
+        <div class="row">
+            <div class="col">
+                <select class="form-select form-select-lg" aria-label="Choose Blood Group">
+                    <option selected>Choose Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+            </div>
+            <div class="col">
+                <select class="form-select form-select-lg" aria-label="Disease">
+                    <option value="none">Disease Free</option>
+                    <option value="minor">Have Minor Disease</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <table class="table table-success table-striped table-hover">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Donor</th>
+                <th scope="col">Blood Group</th>
+                <th scope="col">Disease</th>
+                <th scope="col">Phone Number</th>
+                <th scope="col">Location</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in donor_list %}
+                <tr>
+                    <th scope="row">{{ i }}</th>
+                    <td>Mark</td>
+                    <td>AB+</td>
+                    <td>none</td>
+                    <td>+01923238232</td>
+                    <td>Badda</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

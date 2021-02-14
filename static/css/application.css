@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'BebasNeue';
+    src: local('BebasNeue'),
+    url('../fonts/BebasNeue-Regular.ttf') format("truetype");
+}
+
+* {
+    font-family: 'BebasNeue', monospace;
+    font-size: 1.1rem;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+img {
+    object-fit: cover;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+.navbar-brand {
+    font-size: 1.7rem;
+}
+
+.nav-item {
+    font-size: 1.3rem;
+}
+
+.carousel-inner {
+    max-height: 700px !important;
+}
+
+.show-card, .show-card img {
+    height: 300px;
+    background-repeat: no-repeat;
+    background-size: auto;
+}
+
+.show-card img {
+    opacity: 0.3;
+}
