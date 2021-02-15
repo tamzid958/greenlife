@@ -1,11 +1,11 @@
 @font-face {
-    font-family: 'BebasNeue';
-    src: local('BebasNeue'),
-    url('../fonts/BebasNeue-Regular.ttf') format("truetype");
+    font-family: 'Oswald';
+    src: local('Oswald'),
+    url('../fonts/Oswald-VariableFont.ttf') format("truetype");
 }
 
 * {
-    font-family: 'BebasNeue', monospace;
+    font-family: 'Oswald', monospace;
     font-size: 1.1rem;
 }
 
@@ -46,4 +46,17 @@ img {
 
 .show-card img {
     opacity: 0.3;
+}
+.letter-spacing-1{
+  letter-spacing: 0.3rem;
+}
+.form-text, .form-text li{
+    font-size: 0.9rem;
+}
+.login-icon{
+    width: 10rem;
+    height: 10rem;
+}
+.login-card{
+    width: 25rem;
 }

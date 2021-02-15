@@ -9,13 +9,13 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'icons/all.css' %}">
     <link rel="stylesheet" href="{% static 'css/application.css' %}">
-    <title>GreenLife</title>
+    <title>{{ page_title }} | GreenLife</title>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-success">
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient bg-success">
     <div class="container">
-        <a class="navbar-brand" href="/">GreenLife</a>
+        <a class="navbar-brand text-uppercase" href="/">GreenLife</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -23,21 +23,28 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link {% if nbar == 'index' %}active{% endif %}" href="/">Home</a>
+                    <a class="nav-link text-uppercase {% if nbar == 'index' %}active{% endif %}" href="/">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link">Login</a>
+                    <a class="nav-link text-uppercase {% if nbar == 'search' %}active{% endif %}" href="/searching">Find a Donor</a>
                 </li>
+            {% if not user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link text-uppercase {% if nbar == 'login' %}active{% endif %}" href="/donation_list">Login</a>
+                </li>
+            {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link text-uppercase {% if nbar == 'dashboard' %}active{% endif %}" href="/donation_list">{{user.username}}</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
 {% block content %}
 {% endblock %}
-<div class="m-5 h-100 p-5">
-
-</div>
-<footer class="footer bg-light">
+<footer class="footer bg-light bg-gradient">
     <div class="container">
         &copy; 2021 - GreenLife <a class="link-success">Privacy Policy</a>
     </div>

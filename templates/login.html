@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="container">
+      <div class="login-card m-auto bg-success bg-gradient card text-white mt-5 p-5">
+          <div class="d-flex justify-content-center mb-3">
+              <div class="rounded-circle bg-light text-success d-flex justify-content-center align-items-center login-icon"><i class="fa fa-user fa-5x"></i> </div>
+          </div>
+          <form method="post" action="" class="mb-3">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="InputUser" class="form-label">Username</label>
+                <input type="text" name="User" class="form-control" id="InputUser">
+              </div>
+              <div class="mb-3">
+                <label for="InputPassword" class="form-label">Password</label>
+                <input type="password" name="Password" class="form-control" id="InputPassword">
+              </div>
+              <button type="submit" class="btn btn-light">Login</button>
+            </form>
+          {% for message in messages %}
+              <p class="mb-3 badge text-white bg-danger letter-spacing-1">{{ message }}</p>
+           {% endfor %}
+          <span class="border-bottom border-light mb-3"></span>
+          <a href="/register" class="link-light">Register</a>
+      </div>
+    </div>
+    <div class="m-5 h-100 p-5">
+
+    </div>
+{% endblock %}

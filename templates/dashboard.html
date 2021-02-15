@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="navbar navbar-dark sticky-top bg-dark p-2 shadow">
+    <div class="container">
+         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <ul class="navbar-nav px-3 ms-auto">
+            <li class="nav-item text-nowrap">
+              <a class="btn btn-info bg-gradient" href="/donor_registration">Be a donor</a>
+            </li>
+          </ul>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse vh-100">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column nav-pills">
+              <li class="nav-item">
+                <a class="nav-link link-light {% if dbar == 'donation_list' %}active{% endif %}" href="/donation_list">
+                    <span class="fas fa-hand-holding-water"></span>
+                  Donation List
+                </a>
+              </li>
+            <li class="nav-item">
+            <a class="nav-link link-light {% if dbar == 'update_profile' %}active{% endif %}" href="/update_profile">
+                <span class="fas fa-user"></span>
+                 Update Profile
+            </a>
+          </li>
+            <li class="nav-item">
+            <a class="nav-link link-light {% if dbar == 'review' %}active{% endif %}" href="/review">
+                <span class="fa fa-star"></span>
+                Review
+            </a>
+          </li>
+         <li class="nav-item">
+            <a class="nav-link link-light bg-danger" href="/logout_view">
+                <span class="fa fa-sign-out-alt"></span>
+                Sign Out
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        {% block dashboard %}
+        {% endblock %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
