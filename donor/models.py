@@ -5,10 +5,12 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 class Donation(models.Model):
-    donor_data = models.OneToOneField(User, on_delete=models.CASCADE, related_name='donor_data')
+    donor_data = models.ForeignKey(User, on_delete=models.CASCADE, related_name='donor_data')
     review_per_donation = models.IntegerField(null=True, blank=True)
-    patient_data = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient_data')
+    patient_data = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patient_data')
+    donation_status = models.BooleanField(null=False,blank=False,default=False)
     donation_date = models.DateTimeField()
+    appointment_date = models.DateTimeField(null=False,blank=False)
 
 
 class Donor(models.Model):

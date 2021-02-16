@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container mt-5">
+         <form method="POST" action="">
+             {% csrf_token %}
+            <input type="hidden" class="visually-hidden" name="donorID" value="{{ donor.donor_data.id }}" required readonly>
+            <div class="row mb-3">
+                  <div class="col-md-6">
+                     <label for="nameInput" class="form-label">First Name</label>
+                     <input type="text" class="form-control" name="nameInput" value="{{ donor.donor_data.first_name }}" id="nameInput" required readonly>
+                 </div>
+                 <div class="col-md-6">
+                      <label for="BloodGroup" class="form-label">Blood Group</label>
+                      <input type="text" class="form-control" name="BloodGroup" value="{{ donor.blood_group }}" id="BloodGroup" required readonly>
+                 </div>
+            </div>
+             <div class="row mb-3">
+                  <div class="col-md-6">
+                      <label for="disease" class="form-label">Disease</label>
+                     <input type="text" class="form-control" name="disease" value="{% if donor.disease %}minor{% endif %}{% if not donor.disease %}none{% endif %}" id="disease" required readonly>
+                 </div>
+                 <div class="col-md-6">
+                      <label for="location" class="form-label">Location</label>
+                     <input type="text" class="form-control" name="location" value="{{ donor.location }}" id="location" required readonly>
+                 </div>
+             </div>
+             <div class="row mb-3">
+                 <label for="appointmentTime" class="form-label">Appointment</label>
+                 <input type="datetime-local" class="form-control" id="appointmentTime" name="appointmentTime" required>
+             </div>
+           <button type="submit" class="btn btn-success">Get Phone Number</button>
+         </form>
+    </div>
+{% endblock %}

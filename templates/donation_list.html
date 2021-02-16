@@ -4,21 +4,30 @@
         <table class="table table-success table-active table-striped table-sm">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Header</th>
-              <th>Header</th>
-              <th>Header</th>
-              <th>Header</th>
+                <th>Donor</th>
+                <th>Phone</th>
+                <th>Location</th>
+                <th>Appointment</th>
+                <th>Creation Date</th>
+                <th>Status</th>
             </tr>
           </thead>
           <tbody>
+           {% for obj in patient %}
             <tr>
-              <td>1,001</td>
-              <td>random</td>
-              <td>data</td>
-              <td>placeholder</td>
-              <td>text</td>
+              <td>{{obj.donor_data.first_name}}</td>
+              <td>{{obj.donor_data.donor.phone}}</td>
+              <td>{{obj.donor_data.donor.location}}</td>
+                <td>{{obj.appointment_date}}</td>
+              <td>{{obj.donation_date}}</td>
+                {% if not obj.donor_data.donation_status %}
+                    <td>Pending</td>
+                {% endif %}
+                {% if obj.donor_data.donation_status %}
+                    <td>Completed</td>
+                {% endif %}
             </tr>
+          {% endfor %}
           </tbody>
         </table>
       </div>

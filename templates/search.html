@@ -2,43 +2,46 @@
 {% block content %}
 <div class="container mt-3">
     <h1 class="text-center">Search Blood Donor by Area</h1>
-               <div class="form-group mb-3">
-                         <select class="form-select form-select-lg" name="location" required>
-                             <option value="" selected disabled>Choose Location</option>
-                             <option value="Dhaka">Dhaka</option>
-                             <option value="Barisal">Barisal</option>
-                             <option value="Chittagong">Chittagong</option>
-                             <option value="Khulna">Khulna</option>
-                             <option value="Mymensingh">Mymensingh</option>
-                             <option value="Rajshahi">Rajshahi</option>
-                             <option value="Rangpur">Rangpur</option>
-                             <option value="Sylhet">Sylhet</option>
-                        </select>
-                    </div>
-        <div class="row">
-            <div class="col">
-                <select class="form-select form-select-lg" aria-label="Choose Blood Group">
-                    <option value="" disabled selected>Choose Blood Group</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
+      <form method="GET" action="">
+           <div class="form-group mb-3">
+                 <select class="form-select form-select-lg" name="location" id="location">
+                     <option value="" selected disabled>Choose Location</option>
+                     <option value="Dhaka">Dhaka</option>
+                     <option value="Barisal">Barisal</option>
+                     <option value="Chittagong">Chittagong</option>
+                     <option value="Khulna">Khulna</option>
+                     <option value="Mymensingh">Mymensingh</option>
+                     <option value="Rajshahi">Rajshahi</option>
+                     <option value="Rangpur">Rangpur</option>
+                     <option value="Sylhet">Sylhet</option>
                 </select>
+           </div>
+            <div class="row">
+                <div class="col">
+                    <select class="form-select form-select-lg" aria-label="Choose Blood Group" id="blood" name="blood">
+                        <option value="" disabled selected>Choose Blood Group</option>
+                        <option value="Ap">A+</option>
+                        <option value="Am">A-</option>
+                        <option value="Bp">B+</option>
+                        <option value="Bm">B-</option>
+                        <option value="Op">O+</option>
+                        <option value="Om">O-</option>
+                        <option value="ABp">AB+</option>
+                        <option value="ABm">AB-</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <select class="form-select form-select-lg" aria-label="Disease" id="disease" name="disease">
+                        <option value="False" selected>Disease Free</option>
+                        <option value="True">Have Minor Disease</option>
+                    </select>
+                </div>
             </div>
-            <div class="col">
-                <select class="form-select form-select-lg" aria-label="Disease">
-                    <option value="False" selected>Disease Free</option>
-                    <option value="True">Have Minor Disease</option>
-                </select>
-            </div>
+        <div class="d-flex justify-content-between">
+             <button type="submit" class="btn btn-success btn-lg m-2 col">Apply Filter</button>
+            <a class="btn btn-warning btn-lg m-2 col" href="/searching">Reset Filter</a>
         </div>
-    <div class="d-grid">
-         <button class="btn btn-success btn-lg mt-3">Apply Filter</button>
-    </div>
+      </form>
 </div>
 
         <div class="container mt-5">
@@ -49,33 +52,35 @@
                     <th scope="col">Donor</th>
                     <th scope="col">Blood Group</th>
                     <th scope="col">Disease</th>
-                    <th scope="col">Phone Number</th>
+                    <th scope="col">Ask for Donation</th>
                     <th scope="col">Location</th>
-                    <th scope="col">Review</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% for obj in donor_list %}
-                    <tr>
-                        <td class="text-capitalize">{{ obj.donor_data.first_name }}</td>
-                        <td>{{ obj.blood_group }}</td>
-                        {% if obj.disease %}
-                             <td>minor</td>
-                        {% endif %}
-                        {% if not obj.disease %}
-                             <td>none</td>
-                        {% endif %}
-                        <td>
-                            {% if user.is_authenticated %}
-                                {{ obj.phone }}
+                   {% if obj.donor_data.id is not user.id %}
+                        <tr>
+                            <td class="text-capitalize">{{ obj.donor_data.first_name }}</td>
+                            <td>{{ obj.blood_group }}</td>
+                            {% if obj.disease %}
+                                 <td>minor</td>
                             {% endif %}
-                            {% if not user.is_authenticated %}
-                                <a class="btn btn-sm btn-success" href="/donation_list">Get Phone Number</a>
+                            {% if not obj.disease %}
+                                 <td>none</td>
                             {% endif %}
-                        </td>
-                        <td>{{ obj.location }}</td>
-                        <td>4.5 <span class="text-gold fa fa-star"></span></td>
-                    </tr>
+                            <td>
+
+                                    {% if user.is_authenticated %}
+                                        <a class="btn btn-sm btn-success" href="{% url 'appointment' %}?id={{ obj.donor_data.id }}">Ask The Donor</a>
+                                    {% endif %}
+                                    {% if not user.is_authenticated %}
+                                        <a class="btn btn-sm btn-success" href="/donation_list">Unlock</a>
+                                    {% endif %}
+
+                            </td>
+                            <td>{{ obj.location }}</td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

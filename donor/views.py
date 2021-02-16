@@ -8,8 +8,9 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from donor.models import UserProfile as Role, Donor, UserProfile
+from donor.models import UserProfile as Role, Donor, UserProfile, Donation
 
 # Create your views here.
 
@@ -85,10 +86,12 @@ def donation_list(request):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
+        patient = Donation.objects.filter(patient_data=request.user)
         context = {
             'nbar': 'dashboard',
             'dbar': 'donation_list',
             'page_title': 'Donation List',
+            'patient': patient
         }
         return render(request, 'donation_list.html', context)
 
@@ -126,7 +129,24 @@ def logout_view(request):
 
 
 def searching(request):
+    location = request.GET.get('location')
+    blood = request.GET.get('blood')
+    disease = request.GET.get('disease')
+
     donor_list = Donor.objects.all()
+
+    if location:
+        donor_list = donor_list.filter(location__contains=location)
+    if blood:
+        if blood.endswith('p'):
+            blood = blood.replace('p', '+')
+        elif blood.endswith('m'):
+            blood = blood.replace('m', '-')
+        donor_list = donor_list.filter(blood_group__contains=blood)
+    if disease:
+        disease = True if disease == 'True' else False
+        donor_list = donor_list.filter(disease__exact=disease)
+
     paginated_donor_list = Paginator(donor_list, 100)
     page_num = request.GET.get('page', 1)
     try:
@@ -179,7 +199,8 @@ def donor_registration(request):
             context = {
                 'nbar': 'dashboard',
                 'page_title': 'Donor Confirm Registration',
-                'form_data': {'name': first_name, 'phone': phone, 'dob': dob, 'voter_id': voter_id, 'blood_group': blood_group, 'disease': disease,
+                'form_data': {'name': first_name, 'phone': phone, 'dob': dob, 'voter_id': voter_id,
+                              'blood_group': blood_group, 'disease': disease,
                               'location': location}
             }
             return render(request, 'confirm_donor_registration.html', context)
@@ -190,10 +211,13 @@ def donor_registration(request):
         'nbar': 'dashboard',
         'page_title': 'Donor Registration',
     }
-    if request.user.userprofile.role == "Donor":
-        return redirect('donation_list')
+    if request.user.is_authenticated:
+        if request.user.userprofile.role == "Donor":
+            return redirect('donation_list')
+        else:
+            return render(request, 'donor_registration.html', context)
     else:
-        return render(request, 'donor_registration.html', context)
+        return redirect('donation_list')
 
 
 def ocr_voter_id_front(request, file_url):
@@ -230,7 +254,6 @@ def ocr_voter_id_front(request, file_url):
         except:
             pass
 
-
     try:
         first_name = voter_data.split("Name:")[1].split()[:2]
         first_name = ' '.join(first_name)
@@ -245,7 +268,6 @@ def ocr_voter_id_front(request, file_url):
         except:
             pass
 
-
     try:
         dob = voter_data.split("Date of Birth:")[1].split()[:3]
         dob = ' '.join(dob)
@@ -259,7 +281,7 @@ def ocr_voter_id_front(request, file_url):
             dob = dob.strip()
         except:
             pass
-    return {'voter_id': voter_id,'first_name': first_name, 'dob': dob}
+    return {'voter_id': voter_id, 'first_name': first_name, 'dob': dob}
 
 
 def ocr_voter_id_back(request, file_url):
@@ -294,8 +316,47 @@ def confirm_donor_registration(request):
             messages.info(request, 'some error occurred')
             return redirect('donor_registration')
         else:
-            User.objects.filter(username=request.user.username).update(first_name=first_name)
-            Donor.objects.create(donor_data=request.user, dob=dob, phone=phone, voter_id=voter_id, blood_group=blood_group,
-                                 disease=disease, location=location, donor_register_date=datetime.now())
-            UserProfile.objects.filter(user_data=request.user).update(role='Donor')
-            return redirect('donation_list')
+            if Donor.objects.filter(voter_id=voter_id) or Donor.objects.filter(phone=phone):
+                messages.info(request, 'duplicate user found')
+                return redirect('donor_registration')
+            else:
+                User.objects.filter(username=request.user.username).update(first_name=first_name)
+                donor = Donor.objects.create(donor_data=request.user, dob=dob, phone=phone, voter_id=voter_id,
+                                     blood_group=blood_group,
+                                     disease=disease, location=location, donor_register_date=datetime.now())
+                UserProfile.objects.filter(user_data=request.user).update(role='Donor')
+                donor.save()
+                return redirect('donation_list')
+
+
+def appointment(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        donor = request.POST["donorID"]
+        appointment_date = request.POST['appointmentTime']
+        patient = request.user.id
+        if donor is patient:
+            messages.info(request, "Donor can't donate thyself")
+            return redirect('searching')
+        else:
+            donor_object = User.objects.get(id=donor)
+            patient_object = User.objects.get(id=patient)
+            donation = Donation.objects.create(donor_data=donor_object, patient_data= patient_object, donation_date=datetime.now(),appointment_date=appointment_date)
+            donation.save()
+            messages.info(request, donor_object.donor.phone)
+            print(donor_object.donor.phone)
+        return redirect('searching')
+    else:
+        id = request.GET.get('id')
+        if id is not None and request.user.is_authenticated:
+            try:
+                single_donor = Donor.objects.get(donor_data=id)
+            except Donor.DoesNotExist:
+                return redirect('searching')
+            context = {
+                'nbar': 'search',
+                'page_title': 'Appointment',
+                'donor': single_donor
+            }
+            return render(request, 'appointment.html', context)
+        else:
+            return redirect('searching')
