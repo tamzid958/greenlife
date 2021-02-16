@@ -2,14 +2,21 @@
 {% block content %}
 
 <div class="navbar navbar-dark sticky-top bg-dark p-2 shadow">
-    <div class="container">
+    <div class="container-fluid">
          <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <ul class="navbar-nav px-3 ms-auto">
-            <li class="nav-item text-nowrap">
-              <a class="btn btn-info bg-gradient" href="/donor_registration">Be a donor</a>
-            </li>
+              {% if user.userprofile.role != "Donor" %}
+                <li class="nav-item text-nowrap">
+                  <a class="btn btn-info bg-gradient" href="/donor_registration">Be a donor</a>
+                </li>
+              {% endif %}
+              {% if user.userprofile.role == "Donor" %}
+                  <li class="nav-item text-nowrap">
+                  <a class="btn btn-success bg-gradient">Donor mode on</a>
+                </li>
+              {% endif %}
           </ul>
     </div>
 </div>
@@ -32,12 +39,14 @@
                  Update Profile
             </a>
           </li>
+        {% if user.userprofile.role == "Donor" %}
             <li class="nav-item">
-            <a class="nav-link link-light {% if dbar == 'review' %}active{% endif %}" href="/review">
+            <a class="nav-link link-light {% if dbar == 'donated_to' %}active{% endif %}" href="/donated_to">
                 <span class="fas fa-hand-holding-medical"></span>
                 Donated To
             </a>
           </li>
+        {% endif %}
         </ul>
         <hr class="border-top">
         <a class="nav-link link-light bg-danger" href="/logout_view">

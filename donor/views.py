@@ -1,17 +1,17 @@
 import os
+from datetime import datetime
 from pathlib import Path
+import cv2
+import pytesseract
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
-from django.shortcuts import render, redirect
 from django.core.paginator import Paginator, EmptyPage
-from donor.models import UserProfile as Role
-import cv2
-import pytesseract
+from django.shortcuts import render, redirect
+from donor.models import UserProfile as Role, Donor, UserProfile
 
 # Create your views here.
-from greenlife import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +20,7 @@ def home(request):
     context = {
         'page_title': 'Home',
         'nbar': 'index',
-        'donor_list': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        'donor_list': Donor.objects.all()[:10]
     }
     return render(request, 'index.html', context)
 
@@ -105,16 +105,16 @@ def update_profile(request):
         return render(request, 'update_profile.html', context)
 
 
-def review(request):
+def donated_to(request):
     if not request.user.is_authenticated:
         return redirect('login')
     else:
         context = {
             'nbar': 'dashboard',
-            'dbar': 'review',
-            'page_title': 'Review',
+            'dbar': 'donated_to',
+            'page_title': 'Donated To',
         }
-        return render(request, 'review.html', context)
+        return render(request, 'donated_to.html', context)
 
 
 def logout_view(request):
@@ -126,7 +126,7 @@ def logout_view(request):
 
 
 def searching(request):
-    donor_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    donor_list = Donor.objects.all()
     paginated_donor_list = Paginator(donor_list, 100)
     page_num = request.GET.get('page', 1)
     try:
@@ -156,7 +156,11 @@ def donor_registration(request):
         front_uploaded_file_url = str(fs.url(font_file)).split('/')[2]
         front_uploaded_file_url = os.path.join(BASE_DIR, 'media', front_uploaded_file_url)
 
-        voter_id = ocr_voter_id_front(request, front_uploaded_file_url)
+        voter_front_data = ocr_voter_id_front(request, front_uploaded_file_url)
+
+        voter_id = voter_front_data['voter_id']
+        first_name = voter_front_data['first_name']
+        dob = voter_front_data['dob']
 
         os.remove(front_uploaded_file_url)
 
@@ -169,12 +173,14 @@ def donor_registration(request):
 
         os.remove(back_uploaded_file_url)
 
-        print(voter_id, blood_group)
-        if voter_id and blood_group:
+        print(voter_id, blood_group, first_name, dob)
+
+        if voter_id and blood_group and first_name and dob:
             context = {
                 'nbar': 'dashboard',
                 'page_title': 'Donor Confirm Registration',
-                'form_data':  {'phone': phone, 'voter_id':voter_id, 'blood_group': blood_group, 'disease': disease, 'location': location}
+                'form_data': {'name': first_name, 'phone': phone, 'dob': dob, 'voter_id': voter_id, 'blood_group': blood_group, 'disease': disease,
+                              'location': location}
             }
             return render(request, 'confirm_donor_registration.html', context)
         else:
@@ -184,32 +190,76 @@ def donor_registration(request):
         'nbar': 'dashboard',
         'page_title': 'Donor Registration',
     }
-    return render(request, 'donor_registration.html', context)
+    if request.user.userprofile.role == "Donor":
+        return redirect('donation_list')
+    else:
+        return render(request, 'donor_registration.html', context)
 
 
 def ocr_voter_id_front(request, file_url):
     voter_id = ''
+    first_name = ''
+    dob = ''
     try:
         pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'Tesseract-OCR', 'tesseract.exe')
         img = cv2.imread(file_url)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
+        print(voter_data)
     except:
         print('something error occurred')
+
     try:
         voter_id = voter_data.split("IDNO:")[1].split()[0]
+        voter_id = voter_id.strip()
     except:
-        print('something error occurred')
+        pass
+
+    if voter_id is None or not voter_id:
+        try:
+            voter_id = voter_data.split("ID NO:")[1].split()[0]
+            voter_id = voter_id.strip()
+        except:
+            pass
+
+    if voter_id is None or not voter_id:
+        try:
+            voter_id = voter_data.split("NID No")[1].split()[:3]
+            voter_id = ' '.join(voter_id)
+            voter_id = voter_id.strip()
+        except:
+            pass
+
+
     try:
-        voter_id = voter_data.split("ID NO:")[1].split()[0]
+        first_name = voter_data.split("Name:")[1].split()[:2]
+        first_name = ' '.join(first_name)
+        first_name = first_name.strip()
     except:
-        print('something error occurred')
+        pass
+    if first_name is None or not first_name:
+        try:
+            first_name = voter_data.split("Name")[1].split()[:2]
+            first_name = ' '.join(first_name)
+            first_name = first_name.strip()
+        except:
+            pass
+
+
     try:
-        voter_id = voter_data.split("NID No")[1].split()[:3]
-        voter_id = ' '.join(voter_id)
+        dob = voter_data.split("Date of Birth:")[1].split()[:3]
+        dob = ' '.join(dob)
+        dob = dob.strip()
     except:
-        print('something error occurred')
-    return voter_id.strip()
+        pass
+    if dob is None or not dob:
+        try:
+            dob = voter_data.split("Date of Birth ")[1].split()[:3]
+            dob = ' '.join(dob)
+            dob = dob.strip()
+        except:
+            pass
+    return {'voter_id': voter_id,'first_name': first_name, 'dob': dob}
 
 
 def ocr_voter_id_back(request, file_url):
@@ -224,7 +274,7 @@ def ocr_voter_id_back(request, file_url):
     try:
         blood_group = voter_data.split("Blood Group:")[1].split()[0]
     except:
-        print('something error occurred')
+        pass
     return blood_group.strip()
 
 
@@ -236,6 +286,16 @@ def confirm_donor_registration(request):
         voter_id = request.POST['voterID']
         blood_group = request.POST['BloodGroup']
         disease = request.POST['disease']
+        disease = False if disease == 'none' else True
         location = request.POST['location']
-        print(phone,voter_id,blood_group, disease,location)
-        return redirect('donation_list')
+        first_name = request.POST['nameInput']
+        dob = request.POST['dob']
+        if phone is None or voter_id is None or blood_group is None or disease is None or location is None or first_name is None or dob is None:
+            messages.info(request, 'some error occurred')
+            return redirect('donor_registration')
+        else:
+            User.objects.filter(username=request.user.username).update(first_name=first_name)
+            Donor.objects.create(donor_data=request.user, dob=dob, phone=phone, voter_id=voter_id, blood_group=blood_group,
+                                 disease=disease, location=location, donor_register_date=datetime.now())
+            UserProfile.objects.filter(user_data=request.user).update(role='Donor')
+            return redirect('donation_list')

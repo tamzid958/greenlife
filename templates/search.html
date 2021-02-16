@@ -42,37 +42,44 @@
 </div>
 
         <div class="container mt-5">
-        <table class="table table-success table-striped table-hover">
-            <thead>
-            <tr>
-                <th scope="col">Donor</th>
-                <th scope="col">Blood Group</th>
-                <th scope="col">Disease</th>
-                <th scope="col">Phone Number</th>
-                <th scope="col">Location</th>
-                <th scope="col">Review</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for i in donor_list %}
+        <div class="table-responsive">
+            <table class="table table-success table-sm table-striped table-hover">
+                <thead>
                 <tr>
-                    <td>Mark</td>
-                    <td>AB+</td>
-                    <td>none</td>
-                    <td>
-                        {% if user.is_authenticated %}
-                            +01923238232
-                        {% endif %}
-                        {% if not user.is_authenticated %}
-                            <a class="btn btn-sm btn-success" href="/donation_list">Get Phone Number</a>
-                        {% endif %}
-                    </td>
-                    <td>Badda</td>
-                    <td>4.5 <span class="text-gold fa fa-star"></span></td>
+                    <th scope="col">Donor</th>
+                    <th scope="col">Blood Group</th>
+                    <th scope="col">Disease</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Review</th>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                {% for obj in donor_list %}
+                    <tr>
+                        <td class="text-capitalize">{{ obj.donor_data.first_name }}</td>
+                        <td>{{ obj.blood_group }}</td>
+                        {% if obj.disease %}
+                             <td>minor</td>
+                        {% endif %}
+                        {% if not obj.disease %}
+                             <td>none</td>
+                        {% endif %}
+                        <td>
+                            {% if user.is_authenticated %}
+                                {{ obj.phone }}
+                            {% endif %}
+                            {% if not user.is_authenticated %}
+                                <a class="btn btn-sm btn-success" href="/donation_list">Get Phone Number</a>
+                            {% endif %}
+                        </td>
+                        <td>{{ obj.location }}</td>
+                        <td>4.5 <span class="text-gold fa fa-star"></span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     <nav aria-label="Page navigation">
       <ul class="pagination justify-content-end">
         {% if donor_list.has_previous %}

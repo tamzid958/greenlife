@@ -13,6 +13,7 @@ class Donation(models.Model):
 
 class Donor(models.Model):
     donor_data = models.OneToOneField(User, on_delete=models.CASCADE)
+    dob = models.CharField(null=False, blank=False, max_length=40, default='blank')
     phone = PhoneNumberField(null=False, blank=False, unique=True)
     voter_id = models.CharField(null=False, blank=False, max_length=200, unique=True, default='blank')
     blood_group = models.CharField(null=False, blank=False, max_length=200)
