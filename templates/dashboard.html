@@ -23,7 +23,7 @@
               <li class="nav-item">
                 <a class="nav-link link-light {% if dbar == 'donation_list' %}active{% endif %}" href="/donation_list">
                     <span class="fas fa-hand-holding-water"></span>
-                  Donation List
+                  Received Donation
                 </a>
               </li>
             <li class="nav-item">
@@ -34,17 +34,16 @@
           </li>
             <li class="nav-item">
             <a class="nav-link link-light {% if dbar == 'review' %}active{% endif %}" href="/review">
-                <span class="fa fa-star"></span>
-                Review
-            </a>
-          </li>
-         <li class="nav-item">
-            <a class="nav-link link-light bg-danger" href="/logout_view">
-                <span class="fa fa-sign-out-alt"></span>
-                Sign Out
+                <span class="fas fa-hand-holding-medical"></span>
+                Donated To
             </a>
           </li>
         </ul>
+        <hr class="border-top">
+        <a class="nav-link link-light bg-danger" href="/logout_view">
+            <span class="fa fa-sign-out-alt"></span>
+            Sign Out
+        </a>
       </div>
     </nav>
 

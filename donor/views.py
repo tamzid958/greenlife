@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator, EmptyPage
 from donor.models import UserProfile as Role
 import cv2
 import pytesseract
@@ -125,9 +126,18 @@ def logout_view(request):
 
 
 def searching(request):
+    donor_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    paginated_donor_list = Paginator(donor_list, 100)
+    page_num = request.GET.get('page', 1)
+    try:
+        page = paginated_donor_list.page(page_num)
+    except EmptyPage:
+        page = paginated_donor_list.page(1)
+
     context = {
         'nbar': 'search',
         'page_title': 'Search',
+        'donor_list': page
     }
     return render(request, 'Search.html', context)
 
