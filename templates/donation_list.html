@@ -20,15 +20,62 @@
               <td>{{obj.donor_data.donor.location}}</td>
                 <td>{{obj.appointment_date}}</td>
               <td>{{obj.donation_date}}</td>
-                {% if not obj.donor_data.donation_status %}
-                    <td>Pending</td>
-                {% endif %}
-                {% if obj.donor_data.donation_status %}
-                    <td>Completed</td>
-                {% endif %}
+                    {% if not obj.donation_status %}
+                        <td>Pending</td>
+                    {% endif %}
+                    {% if obj.donation_status %}
+                        {% if obj.review_per_donation is 0 or not obj.review_per_donation %}
+                            <td>
+                            <button type="button" class="btn btn-success review-btn btn-sm" data-bs-donation-id ="{{ obj.id }}" data-bs-toggle="modal" data-bs-target="#Modal">
+                              Give a review
+                            </button>
+                            </td>
+                        {% endif %}
+                         {% if obj.review_per_donation is 0 or obj.review_per_donation %}
+                           <td> {{obj.review_per_donation}} <span class="text-saffron fa fa-star"></span> </td>
+                         {% endif %}
+                    {% endif %}
             </tr>
           {% endfor %}
           </tbody>
         </table>
       </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <form method="POST" action="">
+          {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">Give a review</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                 <input class="visually-hidden" type="hidden" value="" id="donation_id" name="donation_id" required>
+
+                 <input type="radio" class="btn-check" value="1" name="review" id="review-one-star" autocomplete="off">
+                 <label class="btn btn-outline-warning btn-outline-saffron" for="review-one-star">1 <span class="fa fa-star"></span></label>
+
+                 <input type="radio" class="btn-check" value="2" name="review" id="review-two-star" autocomplete="off">
+                 <label class="btn btn-outline-warning btn-outline-saffron" for="review-two-star">2 <span class="fa fa-star"></span></label>
+
+                 <input type="radio" class="btn-check" value="3" name="review" id="review-three-star" autocomplete="off">
+                 <label class="btn btn-outline-warning btn-outline-saffron" for="review-three-star">3 <span class="fa fa-star"></span></label>
+
+                 <input type="radio" class="btn-check" value="4" name="review" id="review-four-star" autocomplete="off">
+                 <label class="btn btn-outline-warning btn-outline-saffron" for="review-four-star">4 <span class="fa fa-star"></span></label>
+
+                 <input type="radio" class="btn-check" value="5" name="review" id="review-five-star" autocomplete="off">
+                 <label class="btn btn-outline-warning btn-outline-saffron" for="review-five-star">5 <span class="fa fa-star"></span></label>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>
 {% endblock %}

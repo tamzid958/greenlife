@@ -8,8 +8,8 @@ from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password
 from donor.models import UserProfile as Role, Donor, UserProfile, Donation
 
 # Create your views here.
@@ -30,7 +30,6 @@ def view_login(request):
     if request.method == 'POST':
         username = request.POST['User']
         password = request.POST['Password']
-        print(username, password)
         user = authenticate(request, username=username, password=password)
         if user is not None and not user.is_superuser:
             if user.is_active:
@@ -83,39 +82,74 @@ def register(request):
 
 
 def donation_list(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    if request.method == 'POST':
+        donation_id = request.POST["donation_id"]
+        review = request.POST["review"]
+        Donation.objects.filter(id=donation_id).update(review_per_donation=review)
     else:
-        patient = Donation.objects.filter(patient_data=request.user)
-        context = {
-            'nbar': 'dashboard',
-            'dbar': 'donation_list',
-            'page_title': 'Donation List',
-            'patient': patient
-        }
-        return render(request, 'donation_list.html', context)
+        if not request.user.is_authenticated:
+            return redirect('login')
+        else:
+            patient = Donation.objects.filter(patient_data=request.user)
+            context = {
+                'nbar': 'dashboard',
+                'dbar': 'donation_list',
+                'page_title': 'Donation List',
+                'patient': patient
+            }
+            return render(request, 'donation_list.html', context)
 
 
 def update_profile(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    if request.method == 'POST':
+        username = request.POST['UserName']
+        old_password = request.POST['OldPassword']
+        password1 = request.POST['InputPassword1']
+        password2 = request.POST['InputPassword2']
+        user = authenticate(request, username=username, password=old_password)
+        if user is not None:
+            if user.is_active:
+                if password1 == password2:
+                    password = make_password(password1, hasher='default')
+                    User.objects.filter(id= user.id).update(password=password)
+                    return redirect('update_profile')
+                else:
+                    messages.info(request, 'Invalid Details')
+                    return redirect('update_profile')
+            else:
+                messages.info(request, 'Invalid Details')
+                return redirect('update_profile')
+        else:
+            messages.info(request, 'Invalid Details')
+            return redirect('update_profile')
+
     else:
-        context = {
-            'nbar': 'dashboard',
-            'dbar': 'update_profile',
-            'page_title': 'Update Profile',
-        }
-        return render(request, 'update_profile.html', context)
+        if not request.user.is_authenticated:
+            return redirect('login')
+        else:
+            context = {
+                'nbar': 'dashboard',
+                'dbar': 'update_profile',
+                'page_title': 'Update Profile',
+            }
+            return render(request, 'update_profile.html', context)
 
 
 def donated_to(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user.userprofile.role != "Donor":
         return redirect('login')
     else:
+        confirmation_id = request.GET.get('confirmation')
+        print(confirmation_id)
+        if confirmation_id:
+            Donation.objects.filter(id=confirmation_id).update(donation_status=True)
+
+        donor = Donation.objects.filter(donor_data=request.user)
         context = {
             'nbar': 'dashboard',
             'dbar': 'donated_to',
             'page_title': 'Donated To',
+            'donor': donor
         }
         return render(request, 'donated_to.html', context)
 
@@ -322,8 +356,8 @@ def confirm_donor_registration(request):
             else:
                 User.objects.filter(username=request.user.username).update(first_name=first_name)
                 donor = Donor.objects.create(donor_data=request.user, dob=dob, phone=phone, voter_id=voter_id,
-                                     blood_group=blood_group,
-                                     disease=disease, location=location, donor_register_date=datetime.now())
+                                             blood_group=blood_group,
+                                             disease=disease, location=location, donor_register_date=datetime.now())
                 UserProfile.objects.filter(user_data=request.user).update(role='Donor')
                 donor.save()
                 return redirect('donation_list')
@@ -340,7 +374,8 @@ def appointment(request):
         else:
             donor_object = User.objects.get(id=donor)
             patient_object = User.objects.get(id=patient)
-            donation = Donation.objects.create(donor_data=donor_object, patient_data= patient_object, donation_date=datetime.now(),appointment_date=appointment_date)
+            donation = Donation.objects.create(donor_data=donor_object, patient_data=patient_object,
+                                               donation_date=datetime.now(), appointment_date=appointment_date)
             donation.save()
             messages.info(request, donor_object.donor.phone)
             print(donor_object.donor.phone)
@@ -360,3 +395,15 @@ def appointment(request):
             return render(request, 'appointment.html', context)
         else:
             return redirect('searching')
+
+
+def update_phone(request):
+    if request.method == "POST":
+        phone = request.POST["phoneNumber"]
+        if phone is not None:
+            Donor.objects.filter(donor_data=request.user).update(phone=phone)
+            return redirect('update_profile')
+        else:
+            return redirect('update_profile')
+    else:
+        return redirect('update_profile')

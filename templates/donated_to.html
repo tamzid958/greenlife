@@ -1,3 +1,37 @@
 {% extends 'dashboard.html' %}
 {% block dashboard %}
+ <div class="table-responsive p-3">
+        <table class="table table-success table-active table-striped table-sm">
+          <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Appointment</th>
+                <th>Creation Date</th>
+                <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+           {% for obj in donor %}
+            <tr>
+              <td>{{obj.patient_data.first_name}}</td>
+                <td>{{obj.appointment_date}}</td>
+              <td>{{obj.donation_date}}</td>
+                {% if not obj.donation_status %}
+                    <td><a href="{% url 'donated_to' %}?confirmation={{ obj.id }}" class="btn btn-warning btn-sm">Click to Complete</a></td>
+                {% endif %}
+                {% if obj.donation_status %}
+                    {% if obj.review_per_donation is 0 or not obj.review_per_donation %}
+                            <td>
+                              Waiting for review
+                            </td>
+                        {% endif %}
+                         {% if obj.review_per_donation is 0 or obj.review_per_donation %}
+                           <td> {{obj.review_per_donation}} <span class="text-saffron fa fa-star"></span> </td>
+                         {% endif %}
+                {% endif %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
 {% endblock %}

@@ -64,6 +64,16 @@ img {
 .login-card{
     width: 25rem;
 }
-.text-gold{
-    color: #aa6c39;
+.text-saffron{
+    color: #FF9529;
+}
+.btn-outline-saffron{
+    color: #FF9529;
+    background-color: #fff;
+    border-color: #FF9529;
+}
+.btn-outline-saffron:active, .btn-outline-saffron:hover, .btn-outline-saffron:checked + label{
+    color: #fff;
+    background-color: #FF9529;
+    border-color: #FF9529;
 }

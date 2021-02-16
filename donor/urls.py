@@ -12,5 +12,6 @@ urlpatterns = [
     path('searching/',views.searching, name='searching'),
     path('donor_registration/',views.donor_registration, name='donor_registration'),
     path('confirm_donor_registration/',views.confirm_donor_registration, name='confirm_donor_registration'),
-    path('appointment/',views.appointment, name='appointment')
+    path('appointment/',views.appointment, name='appointment'),
+    path('update_phone/',views.update_phone, name='update_phone')
 ]
