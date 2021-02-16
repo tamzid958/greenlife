@@ -145,20 +145,40 @@ def searching(request):
 def donor_registration(request):
     if request.method == 'POST':
         phone = request.POST['phoneNumber']
-        voter_card = request.FILES['voter_card']
+        disease = request.POST['disease']
+        location = request.POST['location']
+        voter_card_front = request.FILES['voter_card_front']
+        voter_card_back = request.FILES['voter_card_back']
+
         fs = FileSystemStorage()
-        file = fs.save(voter_card.name, voter_card)
-        uploaded_file_url = str(fs.url(file)).split('/')[2]
-        uploaded_file_url = os.path.join(BASE_DIR, 'media', uploaded_file_url)
-        temp_data = ocr_voter_id(request,uploaded_file_url)
-        os.remove(uploaded_file_url)
-        voter_id = temp_data['voter_id']
-        blood_group = temp_data['blood_group']
+        font_file = fs.save(voter_card_front.name, voter_card_front)
+
+        front_uploaded_file_url = str(fs.url(font_file)).split('/')[2]
+        front_uploaded_file_url = os.path.join(BASE_DIR, 'media', front_uploaded_file_url)
+
+        voter_id = ocr_voter_id_front(request, front_uploaded_file_url)
+
+        os.remove(front_uploaded_file_url)
+
+        file = fs.save(voter_card_back.name, voter_card_back)
+
+        back_uploaded_file_url = str(fs.url(file)).split('/')[2]
+        back_uploaded_file_url = os.path.join(BASE_DIR, 'media', back_uploaded_file_url)
+
+        blood_group = ocr_voter_id_back(request, back_uploaded_file_url)
+
+        os.remove(back_uploaded_file_url)
+
         print(voter_id, blood_group)
         if voter_id and blood_group:
-             pass
+            context = {
+                'nbar': 'dashboard',
+                'page_title': 'Donor Confirm Registration',
+                'form_data':  {'phone': phone, 'voter_id':voter_id, 'blood_group': blood_group, 'disease': disease, 'location': location}
+            }
+            return render(request, 'confirm_donor_registration.html', context)
         else:
-            messages.info(request,'upload clear picture')
+            messages.info(request, 'upload clear picture')
             return redirect('donor_registration')
     context = {
         'nbar': 'dashboard',
@@ -167,20 +187,21 @@ def donor_registration(request):
     return render(request, 'donor_registration.html', context)
 
 
-def ocr_voter_id(request, file_url):
-    pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'Tesseract-OCR', 'tesseract.exe')
-    img = cv2.imread(file_url)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    voter_data = pytesseract.image_to_string(img, lang='eng')
+def ocr_voter_id_front(request, file_url):
     voter_id = ''
-    blood_group = ''
-
+    try:
+        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'Tesseract-OCR', 'tesseract.exe')
+        img = cv2.imread(file_url)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        voter_data = pytesseract.image_to_string(img, lang='eng')
+    except:
+        print('something error occurred')
     try:
         voter_id = voter_data.split("IDNO:")[1].split()[0]
     except:
         print('something error occurred')
     try:
-        blood_group = voter_data.split("Blood Group:")[1].split()[0]
+        voter_id = voter_data.split("ID NO:")[1].split()[0]
     except:
         print('something error occurred')
     try:
@@ -188,4 +209,33 @@ def ocr_voter_id(request, file_url):
         voter_id = ' '.join(voter_id)
     except:
         print('something error occurred')
-    return {'voter_id': voter_id.strip(), 'blood_group': blood_group.strip()}
+    return voter_id.strip()
+
+
+def ocr_voter_id_back(request, file_url):
+    blood_group = ''
+    try:
+        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'Tesseract-OCR', 'tesseract.exe')
+        img = cv2.imread(file_url)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        voter_data = pytesseract.image_to_string(img, lang='eng')
+    except:
+        print('something error occurred')
+    try:
+        blood_group = voter_data.split("Blood Group:")[1].split()[0]
+    except:
+        print('something error occurred')
+    return blood_group.strip()
+
+
+def confirm_donor_registration(request):
+    if request.method == 'GET':
+        return redirect('donor_registration')
+    elif request.method == 'POST':
+        phone = request.POST['phoneNumber']
+        voter_id = request.POST['voterID']
+        blood_group = request.POST['BloodGroup']
+        disease = request.POST['disease']
+        location = request.POST['location']
+        print(phone,voter_id,blood_group, disease,location)
+        return redirect('donation_list')

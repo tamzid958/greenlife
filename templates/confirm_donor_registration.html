@@ -1,0 +1,40 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block dashboard %}
+
+    <div class="container p-3">
+       <h3>Check if your given data is correct</h3>
+        <form method="post" action="/confirm_donor_registration/" class="mt-3">
+            {% csrf_token %}
+            <div class="row mb-3">
+                 <div class="col-md-6">
+                     <label for="phoneNumberInput" class="form-label">Phone Number</label>
+                     <input type="tel" class="form-control" name="phoneNumber" value="{{ form_data.phone }}" id="phoneNumberInput" required readonly>
+                 </div>
+                 <div class="col-md-6">
+                      <label for="voterInput" class="form-label">Voter ID</label>
+                     <input type="text" class="form-control" name="voterID" value="{{ form_data.voter_id }}" id="voterInput" required readonly>
+                 </div>
+            </div>
+             <div class="row mb-3">
+                 <div class="col-md-4">
+                     <label for="BloodGroup" class="form-label">Blood Group</label>
+                     <input type="text" class="form-control" name="BloodGroup" value="{{ form_data.blood_group }}" id="BloodGroup" required readonly>
+                 </div>
+                 <div class="col-md-4">
+                      <label for="disease" class="form-label">Disease</label>
+                     <input type="text" class="form-control" name="disease" value="{% if form_data.disease == 'True' %}minor{% endif %}{% if form_data.disease == 'False' %}none{% endif %}" id="disease" required readonly>
+                 </div>
+                 <div class="col-md-4">
+                      <label for="location" class="form-label">Location</label>
+                     <input type="text" class="form-control" name="location" value="{{ form_data.location }}" id="location" required readonly>
+                 </div>
+             </div>
+             <button type="submit" class="btn btn-success">Confirm Registration</button>
+        </form>
+             {% for message in messages %}
+                  <p class="mb-3 badge text-white bg-danger letter-spacing-1">{{ message }}</p>
+             {% endfor %}
+    </div>
+
+{% endblock %}

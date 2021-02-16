@@ -64,7 +64,7 @@
                         <h5 class="card-title">Card title</h5>
                         <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
                             additional content. This content is a little bit longer.</p>
-                        <button class="btn btn-light">Find Blood</button>
+                        <a class="btn btn-light" href="searching/">Find Blood</a>
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                         <h5 class="card-title">Card title</h5>
                         <p class="card-text">This is a wider card with supporting text below as a natural lead-in to
                             additional content. This content is a little bit longer.</p>
-                        <button class="btn btn-light">Register Now</button>
+                        <a class="btn btn-light" href="donor_registration/">Register Now</a>
                     </div>
                 </div>
             </div>
@@ -88,18 +88,17 @@
         <table class="table table-success table-striped table-hover">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Donor</th>
                 <th scope="col">Blood Group</th>
                 <th scope="col">Disease</th>
                 <th scope="col">Phone Number</th>
                 <th scope="col">Location</th>
+                <th scope="col">Review</th>
             </tr>
             </thead>
             <tbody>
             {% for i in donor_list %}
                 <tr>
-                    <th scope="row">{{ i }}</th>
                     <td>Mark</td>
                     <td>AB+</td>
                     <td>none</td>
@@ -112,11 +111,12 @@
                         {% endif %}
                     </td>
                     <td>Badda</td>
+                    <td>4.5 <span class="text-gold fa fa-star"></span></td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-     <a class="btn btn-success btn-lg d-grid" href="/searching"> Find More Donor</a>
+     <a class="btn btn-success btn-lg d-grid" href="/searching">Find More Donor</a>
     </div>
     <div class="m-5 h-100 p-5">
 
