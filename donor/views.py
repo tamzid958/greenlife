@@ -1,8 +1,8 @@
 import os
 from datetime import datetime
 from pathlib import Path
-import cv2
 import pytesseract
+import cv2
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.hashers import make_password
@@ -263,8 +263,8 @@ def ocr_voter_id_front(request, file_url):
     dob = ''
     try:
         pytesseract.pytesseract.tesseract_cmd = os.path.join(settings.STATIC_ROOT, 'Tesseract-OCR', 'tesseract.exe')
-        img = cv2.imread(file_url)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.cv2.imread(file_url)
+        img = cv2.cv2.cvtColor(img, cv2.cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
         print(voter_data)
     except:
@@ -325,8 +325,8 @@ def ocr_voter_id_back(request, file_url):
     blood_group = ''
     try:
         pytesseract.pytesseract.tesseract_cmd = os.path.join(settings.STATIC_ROOT, 'Tesseract-OCR', 'tesseract.exe')
-        img = cv2.imread(file_url)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = cv2.cv2.imread(file_url)
+        img = cv2.cv2.cvtColor(img, cv2.cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
     except:
         print('something error occurred')
