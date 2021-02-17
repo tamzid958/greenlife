@@ -6,8 +6,18 @@
             <input type="hidden" class="visually-hidden" name="donorID" value="{{ donor.donor_data.id }}" required readonly>
             <div class="row mb-3">
                   <div class="col-md-6">
-                     <label for="nameInput" class="form-label">First Name</label>
-                     <input type="text" class="form-control" name="nameInput" value="{{ donor.donor_data.first_name }}" id="nameInput" required readonly>
+                      <label for="nameInput" class="form-label">First Name</label>
+                      <div class="input-group">
+                          <span class="input-group-text bg-warning text-dark">
+                              {% if avg_review > 0 %}
+                              {{ avg_review }} <span class="fa fa-star ms-2"></span>
+                              {% endif %}
+                              {% if avg_review <= 0 %}
+                              <span class="fa fa-spinner"></span>
+                              {% endif %}
+                          </span>
+                          <input type="text" class="form-control" name="nameInput" value="{{ donor.donor_data.first_name }}" id="nameInput" required readonly>
+                      </div>
                  </div>
                  <div class="col-md-6">
                       <label for="BloodGroup" class="form-label">Blood Group</label>

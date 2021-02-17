@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from donor.models import UserProfile as Role, Donor, UserProfile, Donation
-
+from django.db.models import Sum
 # Create your views here.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,6 +86,7 @@ def donation_list(request):
         donation_id = request.POST["donation_id"]
         review = request.POST["review"]
         Donation.objects.filter(id=donation_id).update(review_per_donation=review)
+        return redirect('donation_list')
     else:
         if not request.user.is_authenticated:
             return redirect('login')
@@ -377,20 +378,31 @@ def appointment(request):
             donation = Donation.objects.create(donor_data=donor_object, patient_data=patient_object,
                                                donation_date=datetime.now(), appointment_date=appointment_date)
             donation.save()
-            messages.info(request, donor_object.donor.phone)
-            print(donor_object.donor.phone)
-        return redirect('searching')
+        return redirect('donation_list')
     else:
         id = request.GET.get('id')
         if id is not None and request.user.is_authenticated:
             try:
                 single_donor = Donor.objects.get(donor_data=id)
+                user = User.objects.get(id=single_donor.donor_data.id)
+                review_five_star = Donation.objects.filter(donor_data=user, review_per_donation__exact=5).count()
+                review_four_star = Donation.objects.filter(donor_data=user, review_per_donation__exact=4).count()
+                review_three_star = Donation.objects.filter(donor_data=user, review_per_donation__exact=3).count()
+                review_two_star = Donation.objects.filter(donor_data=user, review_per_donation__exact=2).count()
+                review_one_star = Donation.objects.filter(donor_data=user, review_per_donation__exact=1).count()
+                total_review_count = review_five_star + review_four_star + review_three_star + review_two_star + review_one_star
+                if total_review_count > 0:
+                    avg_review = (review_five_star * 5 + review_four_star * 4 + review_three_star * 3 + review_two_star * 2 + review_one_star) / total_review_count
+                else:
+                    avg_review = 0
+
             except Donor.DoesNotExist:
                 return redirect('searching')
             context = {
                 'nbar': 'search',
                 'page_title': 'Appointment',
-                'donor': single_donor
+                'donor': single_donor,
+                'avg_review': avg_review
             }
             return render(request, 'appointment.html', context)
         else:
