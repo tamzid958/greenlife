@@ -13,7 +13,7 @@
           <tbody>
            {% for obj in donor %}
             <tr>
-              <td>{{obj.patient_data.first_name}}</td>
+              <td>{{obj.patient_data.username}}</td>
                 <td>{{obj.appointment_date}}</td>
               <td>{{obj.donation_date}}</td>
                 {% if not obj.donation_status %}
