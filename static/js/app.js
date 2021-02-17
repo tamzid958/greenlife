@@ -4,9 +4,9 @@ if(window.location.pathname.toLowerCase() == "/searching/"){
    const bloodParam = urlParams.get('blood');
    const diseaseParam = urlParams.get('disease');
 
-   if(locationParam != null) $("#location").value = locationParam;
-   if(bloodParam != null) $("#blood").value = bloodParam;
-   if(diseaseParam != null) $("#disease").value = diseaseParam;
+   if(locationParam != null) $("#location").val(locationParam).change();
+   if(bloodParam != null) $("#blood").val(bloodParam).change();
+   if(diseaseParam != null) $("#disease").val(diseaseParam).change();
 }
 if(window.location.pathname.toLowerCase() == "/donation_list/"){
    $(".review-btn").on('click', function (){
