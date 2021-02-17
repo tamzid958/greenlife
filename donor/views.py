@@ -260,7 +260,7 @@ def ocr_voter_id_front(request, file_url):
     first_name = ''
     dob = ''
     try:
-        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'static', 'Tesseract-OCR', 'tesseract.exe')
+        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'staticfiles', 'Tesseract-OCR', 'tesseract.exe')
         img = cv2.imread(file_url)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
@@ -322,7 +322,7 @@ def ocr_voter_id_front(request, file_url):
 def ocr_voter_id_back(request, file_url):
     blood_group = ''
     try:
-        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'static', 'Tesseract-OCR', 'tesseract.exe')
+        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'staticfiles', 'Tesseract-OCR', 'tesseract.exe')
         img = cv2.imread(file_url)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')

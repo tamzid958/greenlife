@@ -2255,7 +2255,7 @@
     if (offsetParent) {
       var html = getDocumentElement(offsetParent);
 
-      if (getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'static' && getComputedStyle$1(html).position !== 'static') {
+      if (getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'staticfiles' && getComputedStyle$1(html).position !== 'staticfiles') {
         return html;
       }
     }
@@ -2288,11 +2288,11 @@
     var window = getWindow(element);
     var offsetParent = getTrueOffsetParent(element);
 
-    while (offsetParent && isTableElement(offsetParent) && getComputedStyle$1(offsetParent).position === 'static') {
+    while (offsetParent && isTableElement(offsetParent) && getComputedStyle$1(offsetParent).position === 'staticfiles') {
       offsetParent = getTrueOffsetParent(offsetParent);
     }
 
-    if (offsetParent && getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'static') {
+    if (offsetParent && getNodeName(offsetParent) === 'body' && getComputedStyle$1(offsetParent).position === 'staticfiles') {
       return window;
     }
 
@@ -3893,7 +3893,7 @@
         this._popper = createPopper$2(referenceElement, this._menu, popperConfig);
 
         if (isDisplayStatic) {
-          Manipulator.setDataAttribute(this._menu, 'popper', 'static');
+          Manipulator.setDataAttribute(this._menu, 'popper', 'staticfiles');
         }
       } // If this is a touch-enabled device we add extra
       // empty mouseover listeners to the body's immediate children;
@@ -4055,9 +4055,9 @@
             offset: this._getOffset()
           }
         }]
-      }; // Disable Popper if we have a static display
+      }; // Disable Popper if we have a staticfiles display
 
-      if (this._config.display === 'static') {
+      if (this._config.display === 'staticfiles') {
         defaultBsPopperConfig.modifiers = [{
           name: 'applyStyles',
           enabled: false
@@ -4305,7 +4305,7 @@
   var CLASS_NAME_OPEN = 'modal-open';
   var CLASS_NAME_FADE$1 = 'fade';
   var CLASS_NAME_SHOW$3 = 'show';
-  var CLASS_NAME_STATIC = 'modal-static';
+  var CLASS_NAME_STATIC = 'modal-staticfiles';
   var SELECTOR_DIALOG = '.modal-dialog';
   var SELECTOR_MODAL_BODY = '.modal-body';
   var SELECTOR_DATA_TOGGLE$3 = '[data-bs-toggle="modal"]';
@@ -4625,7 +4625,7 @@
             return;
           }
 
-          if (_this9._config.backdrop === 'static') {
+          if (_this9._config.backdrop === 'staticfiles') {
             _this9._triggerBackdropTransition();
           } else {
             _this9.hide();
