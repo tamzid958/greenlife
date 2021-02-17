@@ -1,8 +1,9 @@
 import os
 from datetime import datetime
 from pathlib import Path
-import pytesseract
+
 import cv2
+import pytesseract
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.hashers import make_password
@@ -12,12 +13,9 @@ from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect
 from donor.models import UserProfile as Role, Donor, UserProfile, Donation
 from django.conf import settings
+
+
 # Create your views here.
-
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 def home(request):
     context = {
@@ -114,7 +112,7 @@ def update_profile(request):
             if user.is_active:
                 if password1 == password2:
                     password = make_password(password1, hasher='default')
-                    User.objects.filter(id= user.id).update(password=password)
+                    User.objects.filter(id=user.id).update(password=password)
                     return redirect('update_profile')
                 else:
                     messages.info(request, 'Invalid Details')
@@ -263,8 +261,8 @@ def ocr_voter_id_front(request, file_url):
     dob = ''
     try:
         pytesseract.pytesseract.tesseract_cmd = os.path.join(settings.STATIC_ROOT, 'Tesseract-OCR', 'tesseract.exe')
-        img = cv2.cv2.imread(file_url)
-        img = cv2.cv2.cvtColor(img, cv2.cv2.COLOR_BGR2RGB)
+        img = cv2.imread(file_url)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
         print(voter_data)
     except:
@@ -325,8 +323,8 @@ def ocr_voter_id_back(request, file_url):
     blood_group = ''
     try:
         pytesseract.pytesseract.tesseract_cmd = os.path.join(settings.STATIC_ROOT, 'Tesseract-OCR', 'tesseract.exe')
-        img = cv2.cv2.imread(file_url)
-        img = cv2.cv2.cvtColor(img, cv2.cv2.COLOR_BGR2RGB)
+        img = cv2.imread(file_url)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
     except:
         print('something error occurred')
@@ -394,7 +392,8 @@ def appointment(request):
                 review_one_star = Donation.objects.filter(donor_data=user, review_per_donation__exact=1).count()
                 total_review_count = review_five_star + review_four_star + review_three_star + review_two_star + review_one_star
                 if total_review_count > 0:
-                    avg_review = (review_five_star * 5 + review_four_star * 4 + review_three_star * 3 + review_two_star * 2 + review_one_star) / total_review_count
+                    avg_review = (
+                                         review_five_star * 5 + review_four_star * 4 + review_three_star * 3 + review_two_star * 2 + review_one_star) / total_review_count
                 else:
                     avg_review = 0
 
