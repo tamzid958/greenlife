@@ -25,6 +25,7 @@ SECRET_KEY = '78mxz+3$^(vf)7p9l7tx##)&%^!$c5sl!s#7je_s*#wfemv98-'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
     'greenlife958.herokuapp.com'
 ]
 
