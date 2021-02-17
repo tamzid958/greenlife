@@ -11,9 +11,10 @@ from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect
 from donor.models import UserProfile as Role, Donor, UserProfile, Donation
-
+from django.conf import settings
 # Create your views here.
-from greenlife import settings
+
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
