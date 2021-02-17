@@ -5,13 +5,13 @@ import cv2
 import pytesseract
 from django.contrib import messages
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator, EmptyPage
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import make_password
 from donor.models import UserProfile as Role, Donor, UserProfile, Donation
-from django.db.models import Sum
+
 # Create your views here.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
