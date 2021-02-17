@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect
 from donor.models import UserProfile as Role, Donor, UserProfile, Donation
 
 # Create your views here.
+from greenlife import settings
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -209,7 +210,7 @@ def donor_registration(request):
         font_file = fs.save(voter_card_front.name, voter_card_front)
 
         front_uploaded_file_url = str(fs.url(font_file)).split('/')[2]
-        front_uploaded_file_url = os.path.join(BASE_DIR, 'media', front_uploaded_file_url)
+        front_uploaded_file_url = os.path.join(settings.MEDIA_ROOT, front_uploaded_file_url)
 
         voter_front_data = ocr_voter_id_front(request, front_uploaded_file_url)
 
@@ -222,7 +223,7 @@ def donor_registration(request):
         file = fs.save(voter_card_back.name, voter_card_back)
 
         back_uploaded_file_url = str(fs.url(file)).split('/')[2]
-        back_uploaded_file_url = os.path.join(BASE_DIR, 'media', back_uploaded_file_url)
+        back_uploaded_file_url = os.path.join(settings.MEDIA_ROOT, back_uploaded_file_url)
 
         blood_group = ocr_voter_id_back(request, back_uploaded_file_url)
 
@@ -260,7 +261,7 @@ def ocr_voter_id_front(request, file_url):
     first_name = ''
     dob = ''
     try:
-        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'static', 'Tesseract-OCR', 'tesseract.exe')
+        pytesseract.pytesseract.tesseract_cmd = os.path.join(settings.STATIC_ROOT, 'Tesseract-OCR', 'tesseract.exe')
         img = cv2.imread(file_url)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')
@@ -322,7 +323,7 @@ def ocr_voter_id_front(request, file_url):
 def ocr_voter_id_back(request, file_url):
     blood_group = ''
     try:
-        pytesseract.pytesseract.tesseract_cmd = os.path.join(BASE_DIR, 'static', 'Tesseract-OCR', 'tesseract.exe')
+        pytesseract.pytesseract.tesseract_cmd = os.path.join(settings.STATIC_ROOT, 'Tesseract-OCR', 'tesseract.exe')
         img = cv2.imread(file_url)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         voter_data = pytesseract.image_to_string(img, lang='eng')

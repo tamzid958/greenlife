@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '78mxz+3$^(vf)7p9l7tx##)&%^!$c5sl!s#7je_s*#wfemv98-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic' ,
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'phonenumber_field',
     'donor'
@@ -119,9 +119,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'staticfiles')]
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'base/static')]
 # media directory in the root directory
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
