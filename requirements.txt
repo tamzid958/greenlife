@@ -13,6 +13,7 @@ opencv-python-headless==4.5.1.48
 phonenumbers==8.12.18
 Pillow==8.1.0
 pipenv==2020.11.15
+psycopg2==2.8.6
 pytesseract==0.3.7
 pytz==2021.1
 six==1.15.0
