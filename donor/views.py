@@ -1,7 +1,5 @@
 import os
-from datetime import datetime
-from pathlib import Path
-
+import datetime
 import cv2
 import pytesseract
 from django.contrib import messages
@@ -358,7 +356,7 @@ def confirm_donor_registration(request):
                 User.objects.filter(username=request.user.username).update(first_name=first_name)
                 donor = Donor.objects.create(donor_data=request.user, dob=dob, phone=phone, voter_id=voter_id,
                                              blood_group=blood_group,
-                                             disease=disease, location=location, donor_register_date=datetime.now())
+                                             disease=disease, location=location, donor_register_date=datetime.datetime.now())
                 UserProfile.objects.filter(user_data=request.user).update(role='Donor')
                 donor.save()
                 return redirect('donation_list')
@@ -376,7 +374,7 @@ def appointment(request):
             donor_object = User.objects.get(id=donor)
             patient_object = User.objects.get(id=patient)
             donation = Donation.objects.create(donor_data=donor_object, patient_data=patient_object,
-                                               donation_date=datetime.now(), appointment_date=appointment_date)
+                                               donation_date=datetime.datetime.now(), appointment_date=appointment_date)
             donation.save()
         return redirect('donation_list')
     else:
