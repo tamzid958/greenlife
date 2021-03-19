@@ -77,11 +77,8 @@ WSGI_APPLICATION = 'greenlife.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'greenlife',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': '127.0.0.1',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 db_from_env = dj_database_url.config()
@@ -124,7 +121,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'base/static')]
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'base/static')]
 # media directory in the root directory
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

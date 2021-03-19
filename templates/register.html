@@ -5,7 +5,10 @@
        <form method="post" action="">
             {% csrf_token %}
            {% for message in messages %}
-               <p class="mb-3 badge text-white bg-danger letter-spacing-1">{{ message }}</p>
+                  <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                          {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
            {% endfor %}
            <div class="col mb-3">
                <label for="UserName" class="form-label">User Name</label>
